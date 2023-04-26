@@ -27,3 +27,5 @@ doc/api/
 .flutter-plugins-dependencies
 *.iml
 .idea/
+id_rsa
+.DS_Store
