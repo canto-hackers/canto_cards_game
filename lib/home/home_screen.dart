@@ -9,12 +9,13 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     controller.init();
-    // return Obx(() {
-    //   return Text(controller.city.value);
-    // });
-    return ElevatedButton(
-      onPressed: () => Get.toNamed(Routes.gameLobby),
-      child: Text("Go to lobby"),
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => Get.toNamed(Routes.gameLobby),
+          child: Text("Go to lobby"),
+        ),
+      ),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:canto_cards_game/db/db_ops.dart';
 import 'package:canto_cards_game/game/game_model.dart';
+import 'package:canto_cards_game/player/player_model.dart';
+import 'package:canto_cards_game/routes.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,7 +36,31 @@ class GameLobbyController extends GetxController {
   }
 
   Future<void> newGame(String gameName) async {
-    String game = await db.insertGame(gameName);
-    // availableGames.add(game);
+    String userId = Get.parameters["userId"]!;
+    int id = int.parse(userId);
+    Player host = await db.getPlayer(id);
+    Game game = await db.insertGame(gameName, host.id);
+    Get.toNamed(Routes.gamePreview, arguments: {'game': game, 'host': host});
+  }
+
+  Future<void> joinGame(Game hostedGame) async {
+    String userId = Get.parameters["userId"]!;
+    int id = int.parse(userId);
+    Player joiner = await db.getPlayer(id);
+
+    hostedGame.joinerId = joiner.id;
+    hostedGame.players = 2;
+    hostedGame.isNewGame = false;
+
+    Game gameInProgress = await db.updateGame(hostedGame);
+
+    int hostId = gameInProgress.hostId!;
+    Player host = await db.getPlayer(hostId);
+
+    Get.toNamed(Routes.gamePreview, arguments: {
+      'game': gameInProgress,
+      'host': host,
+      'joiner': joiner,
+    });
   }
 }

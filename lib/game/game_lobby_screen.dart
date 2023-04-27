@@ -40,18 +40,13 @@ class GameLobbyScreen extends GetView<GameLobbyController> {
                 return ListView.builder(
                   itemCount: controller.availableGames.length,
                   itemBuilder: (context, index) {
-                    String gameName = controller.availableGames[index].name;
+                    var game = controller.availableGames[index];
+                    String gameName = game.name;
                     return ListTile(
                       title: Text(gameName),
                       trailing: ElevatedButton(
                         onPressed: () {
-                          // Navigate to the game lobby screen when the user taps on the join button
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => GameLobbyScreen(gameName),
-                          //   ),
-                          // );
+                          controller.joinGame(game);
                         },
                         child: const Text('Join'),
                       ),
