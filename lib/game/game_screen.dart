@@ -34,43 +34,27 @@ class GameScreen extends GetView<GameController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           AvatarWidget(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-            ],
+          Expanded(
+            child: Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: controller.yourPlayedCards.toList(),
+                )),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-            ],
+          Expanded(
+            child: Obx(() => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: controller.myPlayedCards.toList(),
+            )),
           ),
           AvatarWidget(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-              CardWidget(number: 1),
-            ],
+          Expanded(
+            child: Obx(() => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: controller.myCards.toList(),
+            )),
           ),
         ],
       ),
     );
   }
 }
-

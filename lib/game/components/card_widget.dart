@@ -7,6 +7,7 @@ class CardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      child: Text(number.toString()),
       margin: EdgeInsets.all(8),
       width: 60,
       height: 80,
