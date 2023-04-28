@@ -1,4 +1,5 @@
 import 'package:canto_cards_game/game/game_preview_controller.dart';
+import 'package:canto_cards_game/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,7 +53,9 @@ class GamePreviewScreen extends GetView<GamePreviewController> {
             height: 50,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              controller.startGame();
+            },
             child: Text(
               "START GAME",
               style: TextStyle(fontSize: 30),

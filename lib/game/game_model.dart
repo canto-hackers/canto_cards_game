@@ -5,10 +5,10 @@ class Game {
   late int players;
   final int? hostId;
   late int? joinerId;
-  late bool isNewGame;
+  late String status;
   final int? winnerId;
 
-  Game(this.id, this.timestamp, this.name, this.players, this.hostId, this.joinerId, this.isNewGame, this.winnerId);
+  Game(this.id, this.timestamp, this.name, this.players, this.hostId, this.joinerId, this.status, this.winnerId);
 
   Game.empty({this.id = 0, this.name = "NewGame", this.hostId = 0, this.winnerId = 0});
 
@@ -20,7 +20,7 @@ class Game {
         hostId = json['hostId'],
         joinerId = json['joinerId'],
         winnerId = json['winnerId'],
-        isNewGame = json['isNewGame'];
+        status = json['status'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -30,6 +30,6 @@ class Game {
         'hostId': hostId,
         'joinerId': joinerId,
         'winnerId': winnerId,
-        'isNewGame': isNewGame,
+        'status': status,
       };
 }

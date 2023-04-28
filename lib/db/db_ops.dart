@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:canto_cards_game/game/game_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
@@ -8,7 +7,7 @@ class DbOps {
   final supabase = Supabase.instance.client;
 
   Future<List<Game>> getNewGames() async {
-    final List<dynamic> data = await supabase.from('games').select('*').match({'isNewGame': true});
+    final List<dynamic> data = await supabase.from('games').select('*').match({'status': 'new'});
     if (data.isEmpty) {
       // handle empty data
       return [];

@@ -50,7 +50,7 @@ class GameLobbyController extends GetxController {
 
     hostedGame.joinerId = joiner.id;
     hostedGame.players = 2;
-    hostedGame.isNewGame = false;
+    hostedGame.status = "ready_to_start";
 
     Game gameInProgress = await db.updateGame(hostedGame);
 
