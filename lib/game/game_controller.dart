@@ -20,22 +20,30 @@ class GameController extends GetxController {
     // joiner.value = Get.arguments['joiner'] ?? joiner.value;
 
     myCards.value = <CardWidget>[
-      CardWidget(number: 1),
-      CardWidget(number: 1),
-      CardWidget(number: 1),
-      CardWidget(number: 1),
-      CardWidget(number: 1),
-      CardWidget(number: 1),
+      CardWidget(id: 1),
+      CardWidget(id: 1),
+      CardWidget(id: 1),
+      CardWidget(id: 1),
+      CardWidget(id: 1),
+      CardWidget(id: 1),
     ];
 
     yourPlayedCards.value = <CardWidget>[
-      CardWidget(number: 2),
-      CardWidget(number: 2),
+      CardWidget(id: 2),
+      CardWidget(id: 2),
     ];
 
     myPlayedCards.value = <CardWidget>[
-      CardWidget(number: 2),
-      CardWidget(number: 3),
+      CardWidget(id: 2),
+      CardWidget(id: 3),
     ];
+  }
+
+  void playCard(int id) {
+    int cardIndex = myCards.indexWhere((card) => card.id == id);
+    CardWidget card = myCards[cardIndex];
+    myCards.removeAt(cardIndex);
+
+    myPlayedCards.insert(0, card);
   }
 }

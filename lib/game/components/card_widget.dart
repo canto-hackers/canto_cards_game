@@ -1,18 +1,20 @@
+import 'package:canto_cards_game/game/game_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class CardWidget extends StatelessWidget {
-  final int number;
+class CardWidget extends GetView<GameController> {
+  final int id;
 
-  const CardWidget({Key? key, required this.number}) : super(key: key);
+  const CardWidget({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showCardDialog(context, CardWidget(number: number));
+        showCardDialog(context, CardWidget(id: id));
       },
       child: Container(
-        child: Text(number.toString()),
+        child: Text(id.toString()),
         margin: EdgeInsets.all(8),
         width: 60,
         height: 80,
@@ -58,7 +60,10 @@ class CardWidget extends StatelessWidget {
                 cardWidget,
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    controller.playCard(id);
+                    Get.back();
+                  },
                   child: Text("Play"),
                 ),
               ],
