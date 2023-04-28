@@ -11,7 +11,8 @@ class Routes {
   static const String game = '/game';
 
   static List<GetPage> routes = [
-    GetPage(name: initial, page: () => HomeScreen()),
+    // GetPage(name: initial, page: () => HomeScreen()),
+    GetPage(name: initial, page: () => GameScreen()),
     GetPage(name: gameLobby, page: () => GameLobbyScreen()),
     GetPage(name: gamePreview, page: () => GamePreviewScreen()),
     GetPage(name: game, page: () => GameScreen()),
