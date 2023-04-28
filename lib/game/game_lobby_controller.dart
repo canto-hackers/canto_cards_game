@@ -12,7 +12,7 @@ class GameLobbyController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    availableGames.value = await db.getGames();
+    availableGames.value = await db.getNewGames();
 
     db.supabase.channel('public:games').on(
         RealtimeListenTypes.postgresChanges,

@@ -7,8 +7,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbOps {
   final supabase = Supabase.instance.client;
 
-  Future<List<Game>> getGames() async {
-    final List<dynamic> data = await supabase.from('games').select('*');
+  Future<List<Game>> getNewGames() async {
+    final List<dynamic> data = await supabase.from('games').select('*').match({'isNewGame': true});
     if (data.isEmpty) {
       // handle empty data
       return [];

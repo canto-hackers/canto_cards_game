@@ -8,31 +8,54 @@ class GamePreviewScreen extends GetView<GamePreviewController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
         children: [
-          Expanded(
-            child: Container(
-              height: 200,
-              color: Colors.red,
-              child: Center(
-                child: Text(
-                  controller.host.value.name,
-                  style: TextStyle(fontSize: 35, color: Colors.cyan),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Container(
+                  height: 200,
+                  color: Colors.red,
+                  child: Center(
+                    child: Obx(
+                      () {
+                        return Text(
+                          controller.host.value.name,
+                          style: TextStyle(fontSize: 35, color: Colors.cyan),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Text("VS"),
+              Expanded(
+                child: Container(
+                  height: 200,
+                  color: Colors.blueAccent,
+                  child: Center(
+                    child: Obx(
+                      () {
+                        return Text(
+                          controller.joiner.value.name,
+                          style: TextStyle(fontSize: 35, color: Colors.cyan),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          Text("VS"),
-          Expanded(
-            child: Container(
-              height: 200,
-              color: Colors.blueAccent,
-              child: Center(
-                  child: Text(
-                controller.joiner.value.name,
-                style: TextStyle(fontSize: 35, color: Colors.cyan),
-              )),
+          SizedBox(
+            height: 50,
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            child: Text(
+              "START GAME",
+              style: TextStyle(fontSize: 30),
             ),
           ),
         ],
