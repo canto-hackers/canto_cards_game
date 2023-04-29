@@ -9,6 +9,10 @@ class GamePreviewController extends GetxController {
   Rx<Game> game = Game.empty().obs;
   Rx<Player> host = Player.empty().obs;
   Rx<Player> joiner = Player.empty().obs;
+
+  Rx<Player> me = Player.empty().obs;
+  Rx<Player> you = Player.empty().obs;
+
   RxBool isStarting = false.obs;
   DbOps db = Get.find<DbOps>();
   var channel;
@@ -19,6 +23,9 @@ class GamePreviewController extends GetxController {
     game.value = Get.arguments['game'];
     host.value = Get.arguments['host'] ?? host.value;
     joiner.value = Get.arguments['joiner'] ?? joiner.value;
+
+    me.value = Get.arguments['me'] ?? me.value;
+    you.value = Get.arguments['you'] ?? you.value;
 
     channel = db.supabase.channel('public:games:id=eq.${game.value.id}').on(
         RealtimeListenTypes.postgresChanges,
@@ -34,6 +41,7 @@ class GamePreviewController extends GetxController {
 
       if (joinerId != null) {
         joiner.value = await db.getPlayer(joinerId);
+        you = joiner;
       }
       if (newGame["status"] == 'starting') {
         Get.offAndToNamed(
@@ -42,6 +50,8 @@ class GamePreviewController extends GetxController {
             'game': game.value,
             'host': host.value,
             'joiner': joiner.value,
+            'me': me.value,
+            'you': you.value,
           },
         );
       }

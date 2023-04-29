@@ -7,33 +7,16 @@ import 'package:get/get.dart';
 class GameScreen extends GetView<GameController> {
   const GameScreen({super.key});
 
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Obx(() {
-//         return Column(
-//           children: [
-//             Text("Host: ${controller.host.value.name}"),
-//             Text("Joiner: ${controller.joiner.value.name}"),
-//             Text("Game: ${controller.game.value.name}"),
-//           ],
-//         );
-//       }),
-//     );
-//   }
-// }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Game'),
+        title: Text(controller.game.value.name),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AvatarWidget(),
+          AvatarWidget(name: controller.you.value.name),
           Expanded(
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -41,17 +24,18 @@ class GameScreen extends GetView<GameController> {
                 )),
           ),
           Expanded(
-            child: Obx(() => Row(
+              child: Obx(
+            () => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: controller.myPlayedCards.toList(),
-            )),
-          ),
-          AvatarWidget(),
+            ),
+          )),
+          AvatarWidget(name: controller.me.value.name),
           Expanded(
             child: Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: controller.myCards.toList(),
-            )),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: controller.myCards.toList(),
+                )),
           ),
         ],
       ),

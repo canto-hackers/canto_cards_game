@@ -52,13 +52,19 @@ class GamePreviewScreen extends GetView<GamePreviewController> {
           SizedBox(
             height: 50,
           ),
-          ElevatedButton(
-            onPressed: () {
-              controller.startGame();
-            },
-            child: Text(
-              "START GAME",
-              style: TextStyle(fontSize: 30),
+          Visibility(
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: controller.game.value.hostId == controller.me.value.id,
+            child: ElevatedButton(
+              onPressed: () {
+                controller.startGame();
+              },
+              child: Text(
+                "START GAME",
+                style: TextStyle(fontSize: 30),
+              ),
             ),
           ),
         ],

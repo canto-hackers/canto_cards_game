@@ -40,7 +40,7 @@ class GameLobbyController extends GetxController {
     int id = int.parse(userId);
     Player host = await db.getPlayer(id);
     Game game = await db.insertGame(gameName, host.id);
-    Get.toNamed(Routes.gamePreview, arguments: {'game': game, 'host': host});
+    Get.toNamed(Routes.gamePreview, arguments: {'game': game, 'host': host, 'me': host});
   }
 
   Future<void> joinGame(Game hostedGame) async {
@@ -61,6 +61,8 @@ class GameLobbyController extends GetxController {
       'game': gameInProgress,
       'host': host,
       'joiner': joiner,
+      'me': joiner,
+      'you': host,
     });
   }
 }

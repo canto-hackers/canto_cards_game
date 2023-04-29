@@ -4,9 +4,10 @@ import 'package:canto_cards_game/player/player_model.dart';
 import 'package:get/get.dart';
 
 class GameController extends GetxController {
-  // Rx<Game> game = Game.empty().obs;
-  // Rx<Player> host = Player.empty().obs;
-  // Rx<Player> joiner = Player.empty().obs;
+  Rx<Game> game = Game.empty().obs;
+
+  Rx<Player> me = Player.empty().obs;
+  Rx<Player> you = Player.empty().obs;
 
   RxList<CardWidget> myCards = <CardWidget>[].obs;
   RxList<CardWidget> myPlayedCards = <CardWidget>[].obs;
@@ -15,9 +16,9 @@ class GameController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // game.value = Get.arguments['game'] ?? game.value;
-    // host.value = Get.arguments['host'] ?? host.value;
-    // joiner.value = Get.arguments['joiner'] ?? joiner.value;
+    game.value = Get.arguments['game'] ?? game.value;
+    me.value = Get.arguments['me'] ?? me.value;
+    you.value = Get.arguments['you'] ?? you.value;
 
     myCards.value = <CardWidget>[
       CardWidget(id: 1),

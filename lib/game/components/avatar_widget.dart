@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AvatarWidget extends StatelessWidget {
+  final String name;
+
+  const AvatarWidget({super.key, required this.name});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -12,7 +16,7 @@ class AvatarWidget extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          'My Avatar',
+          name,
           style: TextStyle(fontSize: 20),
         ),
       ),
