@@ -7,15 +7,6 @@ class HomeController extends GetxController {
 
   Future<void> init() async {
     final DbOps db = Get.find<DbOps>();
-    // city.value = await db.getCities();
-    // city.value = await db.getCities();
-
-    // db.supabase.from('cities')
-    //     .stream(primaryKey: ['id'])
-    //     .eq('id', '1')
-    //     .listen((List<Map<String, dynamic>> data) {
-    //   city.value = data.first['name'];
-    // });
 
     db.supabase.channel('public:cities:id=eq.1').on(
         RealtimeListenTypes.postgresChanges,

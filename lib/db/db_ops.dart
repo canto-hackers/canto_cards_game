@@ -1,4 +1,4 @@
-
+import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,11 +24,7 @@ class DbOps {
   }
 
   Future<Game> updateGame(Game game) async {
-    final List<Map<String, dynamic>> data = await supabase
-        .from('games')
-        .update(game.toJson())
-        .eq('id', game.id)
-        .select();
+    final List<Map<String, dynamic>> data = await supabase.from('games').update(game.toJson()).eq('id', game.id).select();
 
     return Game.fromJson(data.first);
   }
@@ -41,5 +37,24 @@ class DbOps {
     }
     Player player = Player.fromJson(data.first);
     return player;
+  }
+
+  Future<GameDetails> insertGameDetails(int gameId) async {
+    final List<Map<String, dynamic>> data = await supabase.from('game_details').insert([
+      {'gameId': gameId},
+    ]).select();
+    return GameDetails.fromJson(data.first);
+  }
+
+  Future<GameDetails> updateGameDetails(GameDetails gameDetails) async {
+    final List<Map<String, dynamic>> data = await supabase.from('game_details').update(gameDetails.toJson()).eq('id', gameDetails.id).select();
+
+    return GameDetails.fromJson(data.first);
+  }
+
+  Future<Game> updateGameStatus(Game game) async {
+    final List<Map<String, dynamic>> data = await supabase.from('games').update({'status': game.status}).eq('id', game.id).select();
+
+    return Game.fromJson(data.first);
   }
 }

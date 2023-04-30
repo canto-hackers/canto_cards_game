@@ -1,4 +1,5 @@
 import 'package:canto_cards_game/db/db_ops.dart';
+import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
 import 'package:canto_cards_game/routes.dart';
@@ -10,9 +11,8 @@ class GamePreviewController extends GetxController {
   Rx<Player> host = Player.empty().obs;
   Rx<Player> joiner = Player.empty().obs;
 
-  Rx<Player> me = Player.empty().obs;
-  Rx<Player> you = Player.empty().obs;
-
+  int userId = Get.arguments["userId"]!;
+  late GameDetails gameDetails = GameDetails.empty();
   RxBool isStarting = false.obs;
   DbOps db = Get.find<DbOps>();
   var channel;
@@ -24,9 +24,6 @@ class GamePreviewController extends GetxController {
     host.value = Get.arguments['host'] ?? host.value;
     joiner.value = Get.arguments['joiner'] ?? joiner.value;
 
-    me.value = Get.arguments['me'] ?? me.value;
-    you.value = Get.arguments['you'] ?? you.value;
-
     channel = db.supabase.channel('public:games:id=eq.${game.value.id}').on(
         RealtimeListenTypes.postgresChanges,
         ChannelFilter(
@@ -35,13 +32,12 @@ class GamePreviewController extends GetxController {
           table: 'games',
           filter: 'id=eq.${game.value.id}',
         ), (payload, [ref]) async {
-      print('Change received: ${payload.toString()}');
+      print('Game Preview Update: ${payload.toString()}');
       var newGame = payload["new"];
       var joinerId = newGame["joinerId"];
 
       if (joinerId != null) {
         joiner.value = await db.getPlayer(joinerId);
-        you = joiner;
       }
       if (newGame["status"] == 'starting') {
         Get.offAndToNamed(
@@ -50,8 +46,8 @@ class GamePreviewController extends GetxController {
             'game': game.value,
             'host': host.value,
             'joiner': joiner.value,
-            'me': me.value,
-            'you': you.value,
+            'userId': userId,
+            'gameDetails': gameDetails,
           },
         );
       }
@@ -67,8 +63,13 @@ class GamePreviewController extends GetxController {
     await db.supabase.removeChannel(channel);
   }
 
-  void startGame() {
+  Future<void> startGame() async {
     game.value.status = "starting";
-    db.updateGame(game.value);
+    gameDetails = await db.insertGameDetails(game.value.id);
+    game.value = await db.updateGameStatus(game.value);
+  }
+
+  bool isHost() {
+    return game.value.hostId == userId;
   }
 }

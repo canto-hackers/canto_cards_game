@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class GameLobbyController extends GetxController {
   final RxList<Game> availableGames = <Game>[].obs;
   DbOps db = Get.find<DbOps>();
+  int userId = int.parse(Get.parameters["userId"]!);
 
   @override
   Future<void> onInit() async {
@@ -21,7 +22,7 @@ class GameLobbyController extends GetxController {
           schema: 'public',
           table: 'games',
         ), (payload, [ref]) {
-      print('Change received: ${payload.toString()}');
+      print('Game Lobby Insert: ${payload.toString()}');
       availableGames.add(Game.fromJson(payload["new"]));
     }).on(
         RealtimeListenTypes.postgresChanges,
@@ -30,29 +31,29 @@ class GameLobbyController extends GetxController {
           schema: 'public',
           table: 'games',
         ), (payload, [ref]) {
-      print('Change received: ${payload.toString()}');
+      print('Game Lobby Update: ${payload.toString()}');
       availableGames.removeWhere((element) => element.id == payload["old"]["id"]);
     }).subscribe();
   }
 
   Future<void> newGame(String gameName) async {
-    String userId = Get.parameters["userId"]!;
-    int id = int.parse(userId);
-    Player host = await db.getPlayer(id);
+    Player host = await db.getPlayer(userId);
     Game game = await db.insertGame(gameName, host.id);
-    Get.toNamed(Routes.gamePreview, arguments: {'game': game, 'host': host, 'me': host});
+    Get.toNamed(
+      Routes.gamePreview,
+      arguments: {'game': game, 'host': host, 'userId': userId},
+    );
   }
 
   Future<void> joinGame(Game hostedGame) async {
-    String userId = Get.parameters["userId"]!;
-    int id = int.parse(userId);
-    Player joiner = await db.getPlayer(id);
-
+    Player joiner = await db.getPlayer(userId);
+    print("Joiner ${joiner.id}");
     hostedGame.joinerId = joiner.id;
     hostedGame.players = 2;
     hostedGame.status = "ready_to_start";
 
     Game gameInProgress = await db.updateGame(hostedGame);
+    print("gameInProgress ${gameInProgress.joinerId}");
 
     int hostId = gameInProgress.hostId!;
     Player host = await db.getPlayer(hostId);
@@ -61,8 +62,7 @@ class GameLobbyController extends GetxController {
       'game': gameInProgress,
       'host': host,
       'joiner': joiner,
-      'me': joiner,
-      'you': host,
+      'userId': userId,
     });
   }
 }

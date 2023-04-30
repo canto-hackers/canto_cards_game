@@ -12,7 +12,7 @@ class HomeScreen extends GetView<HomeController> {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          onPressed: () => Get.toNamed(Routes.gameLobby),
+          onPressed: () => Get.toNamed('${Routes.gameLobby}?userId=3'),
           child: Text("Go to lobby"),
         ),
       ),
