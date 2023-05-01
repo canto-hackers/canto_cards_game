@@ -39,10 +39,13 @@ class DbOps {
     return player;
   }
 
-  Future<GameDetails> insertGameDetails(int gameId) async {
-    final List<Map<String, dynamic>> data = await supabase.from('game_details').insert([
-      {'gameId': gameId},
-    ]).select();
+  Future<GameDetails> insertGameDetails(GameDetails gameDetails) async {
+    final List<Map<String, dynamic>> data = await supabase
+        .from('game_details')
+        .insert(
+          gameDetails.toJson(),
+        )
+        .select();
     return GameDetails.fromJson(data.first);
   }
 
@@ -56,5 +59,16 @@ class DbOps {
     final List<Map<String, dynamic>> data = await supabase.from('games').update({'status': game.status}).eq('id', game.id).select();
 
     return Game.fromJson(data.first);
+  }
+
+  Future<GameDetails> getGameDetails(int gameDetailsId) async {
+    final List<dynamic> data = await supabase.from('game_details').select('*').match(
+      {'id': gameDetailsId},
+    );
+    if (data.isEmpty) {
+      // handle empty data
+      // return null;
+    }
+    return GameDetails.fromJson(data.first);
   }
 }

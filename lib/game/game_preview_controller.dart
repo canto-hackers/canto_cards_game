@@ -12,7 +12,7 @@ class GamePreviewController extends GetxController {
   Rx<Player> joiner = Player.empty().obs;
 
   int userId = Get.arguments["userId"]!;
-  late GameDetails gameDetails = GameDetails.empty();
+  GameDetails gameDetails = GameDetails.empty();
   RxBool isStarting = false.obs;
   DbOps db = Get.find<DbOps>();
   var channel;
@@ -47,7 +47,7 @@ class GamePreviewController extends GetxController {
             'host': host.value,
             'joiner': joiner.value,
             'userId': userId,
-            'gameDetails': gameDetails,
+            'gameDetailsId': gameDetails.id,
           },
         );
       }
@@ -65,7 +65,12 @@ class GamePreviewController extends GetxController {
 
   Future<void> startGame() async {
     game.value.status = "starting";
-    gameDetails = await db.insertGameDetails(game.value.id);
+    gameDetails.gameId = game.value.id;
+    gameDetails.hostDeck = host.value.deck;
+    gameDetails.joinerDeck = joiner.value.deck;
+    gameDetails.hostPlayedCards = <int>[];
+    gameDetails.joinerPlayedCards = <int>[];
+    gameDetails = await db.insertGameDetails(gameDetails);
     game.value = await db.updateGameStatus(game.value);
   }
 

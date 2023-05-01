@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:canto_cards_game/game/components/card_widget.dart';
 import 'package:canto_cards_game/game/components/avatar_widget.dart';
 import 'package:canto_cards_game/game/game_controller.dart';
@@ -18,25 +16,25 @@ class GameScreen extends GetView<GameController> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AvatarWidget(name: controller.joiner.value.name),
+          AvatarWidget(name: controller.getOpponentName()),
           Expanded(
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: buildCardWidget(controller.yourPlayedCards),
+                  children: buildCardWidget(controller.opponentPlayedCards),
                 )),
           ),
           Expanded(
               child: Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: buildCardWidget(controller.myPlayedCards),
+              children: buildCardWidget(controller.playerPlayedCards),
             ),
           )),
-          AvatarWidget(name: controller.host.value.name),
+          AvatarWidget(name: controller.getPlayerName()),
           Expanded(
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: buildCardWidget(controller.myCards),
+                  children: buildCardWidget(controller.playerDeck),
                 )),
           ),
         ],

@@ -11,36 +11,58 @@ class GameController extends GetxController {
   Rx<Player> joiner = Player.empty().obs;
 
   int userId = Get.arguments["userId"]!;
-  Rx<GameDetails> gameDetails = Rx(Get.arguments["gameDetails"]!);
+  int gameDetailsId = Get.arguments["gameDetailsId"]!;
+  Rx<GameDetails> gameDetails = GameDetails.empty().obs;
   DbOps db = Get.find<DbOps>();
 
-  RxList<int> myCards = <int>[].obs;
-  RxList<int> myPlayedCards = <int>[].obs;
-  RxList<int> yourPlayedCards = <int>[].obs;
+  RxList<int> playerDeck = <int>[].obs;
+  RxList<int> opponentDeck = <int>[].obs;
+  RxList<int> playerPlayedCards = <int>[].obs;
+  RxList<int> opponentPlayedCards = <int>[].obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    print('On Init: isHost: ${isHost()}');
+    gameDetailsId = Get.arguments["gameDetailsId"]!;
     game.value = Get.arguments['game'] ?? game.value;
     host.value = Get.arguments['host'] ?? host.value;
     joiner.value = Get.arguments['joiner'] ?? joiner.value;
 
-    myCards.value = <int>[1, 2, 3, 4, 5];
+    playerDeck.value = isHost() ? host.value.deck : joiner.value.deck;
+    opponentDeck.value = isHost() ? joiner.value.deck : host.value.deck;
 
-    yourPlayedCards.value = <int>[7, 8];
+    gameDetails.value = await db.getGameDetails(gameDetailsId);
 
-    myPlayedCards.value = <int>[9, 99];
+    opponentPlayedCards.value = isHost() ? gameDetails.value.joinerPlayedCards : gameDetails.value.hostPlayedCards;
+    playerPlayedCards.value = isHost() ? gameDetails.value.hostPlayedCards : gameDetails.value.joinerPlayedCards;
   }
 
   void playCard(int id) {
-    int cardIndex = myCards.indexWhere((card) => card == id);
-
-    gameDetails.value.hostPlayedCards.add(id);
+    if (isHost()) {
+      playerPlayedCards.add(id);
+      playerDeck.removeWhere((cardId) => cardId == id);
+      gameDetails.value.hostPlayedCards = playerPlayedCards;
+      gameDetails.value.hostDeck = playerDeck;
+    } else {
+      opponentPlayedCards.add(id);
+      opponentDeck.removeWhere((cardId) => cardId == id);
+      gameDetails.value.joinerPlayedCards = opponentPlayedCards;
+      gameDetails.value.joinerDeck = opponentDeck;
+    }
     db.updateGameDetails(gameDetails.value);
+    playerDeck.removeWhere((card) => card == id);
+  }
 
-    int card = myCards[cardIndex];
-    myCards.removeAt(cardIndex);
+  bool isHost() {
+    return game.value.hostId == userId;
+  }
 
-    myPlayedCards.insert(0, card);
+  String getOpponentName() {
+    return isHost() ? joiner.value.name : host.value.name;
+  }
+
+  String getPlayerName() {
+    return isHost() ? host.value.name : joiner.value.name;
   }
 }
