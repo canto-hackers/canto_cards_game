@@ -62,8 +62,21 @@ class DbOps {
   }
 
   Future<GameDetails> getGameDetails(int gameDetailsId) async {
+    print("getGameDetails: $gameDetailsId");
     final List<dynamic> data = await supabase.from('game_details').select('*').match(
       {'id': gameDetailsId},
+    );
+    if (data.isEmpty) {
+      // handle empty data
+      // return null;
+    }
+    return GameDetails.fromJson(data.first);
+  }
+
+  Future<GameDetails> getGameDetailsBy(int gameId) async {
+    print("Game Details by Game id: $gameId");
+    final List<dynamic> data = await supabase.from('game_details').select('*').match(
+      {'gameId': gameId},
     );
     if (data.isEmpty) {
       // handle empty data

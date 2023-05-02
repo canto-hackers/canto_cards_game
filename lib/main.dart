@@ -1,4 +1,3 @@
-import 'package:canto_cards_game/home/home_screen.dart';
 import 'package:canto_cards_game/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

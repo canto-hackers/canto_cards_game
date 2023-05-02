@@ -1,11 +1,11 @@
 class Player {
   final int id;
-  late DateTime timestamp;
+  DateTime? timestamp;
   final String name;
   final String? walletAddr;
   final int wins;
   final int losses;
-  late List<int> deck;
+  List<int>? deck;
 
   Player(this.id, this.timestamp, this.name, this.wins, this.walletAddr, this.losses, this.deck);
 

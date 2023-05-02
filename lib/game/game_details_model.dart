@@ -1,11 +1,11 @@
 class GameDetails {
   final int id;
   int gameId;
-  late DateTime? timestamp;
-  late List<int> hostDeck;
-  late List<int> hostPlayedCards;
-  late List<int> joinerDeck;
-  late List<int> joinerPlayedCards;
+   DateTime? timestamp;
+   List<int>? hostDeck;
+   List<int>? hostPlayedCards;
+   List<int>? joinerDeck;
+   List<int>? joinerPlayedCards;
 
   GameDetails.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -25,4 +25,6 @@ class GameDetails {
         'joinerDeck': joinerDeck,
         'joinerPlayedCards': joinerPlayedCards,
       };
+
+  GameDetails(this.id, this.gameId, this.timestamp, this.hostDeck, this.hostPlayedCards, this.joinerDeck, this.joinerPlayedCards);
 }

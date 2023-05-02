@@ -53,7 +53,8 @@ class GameLobbyController extends GetxController {
     hostedGame.status = "ready_to_start";
 
     Game gameInProgress = await db.updateGame(hostedGame);
-    print("gameInProgress ${gameInProgress.joinerId}");
+    print("gameInProgress joinerID:  ${gameInProgress.joinerId}");
+    print("gameInProgress gameId: ${gameInProgress.id}");
 
     int hostId = gameInProgress.hostId!;
     Player host = await db.getPlayer(hostId);

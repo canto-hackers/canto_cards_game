@@ -18,7 +18,7 @@ class GamePreviewController extends GetxController {
   var channel;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     game.value = Get.arguments['game'];
     host.value = Get.arguments['host'] ?? host.value;
@@ -47,7 +47,6 @@ class GamePreviewController extends GetxController {
             'host': host.value,
             'joiner': joiner.value,
             'userId': userId,
-            'gameDetailsId': gameDetails.id,
           },
         );
       }
@@ -70,6 +69,7 @@ class GamePreviewController extends GetxController {
     gameDetails.joinerDeck = joiner.value.deck;
     gameDetails.hostPlayedCards = <int>[];
     gameDetails.joinerPlayedCards = <int>[];
+
     gameDetails = await db.insertGameDetails(gameDetails);
     game.value = await db.updateGameStatus(game.value);
   }
