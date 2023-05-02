@@ -9,6 +9,7 @@ class GameLobbyController extends GetxController {
   final RxList<Game> availableGames = <Game>[].obs;
   DbOps db = Get.find<DbOps>();
   int userId = int.parse(Get.parameters["userId"]!);
+  Rx<Player> host = Player.empty().obs;
 
   @override
   Future<void> onInit() async {
@@ -37,11 +38,11 @@ class GameLobbyController extends GetxController {
   }
 
   Future<void> newGame(String gameName) async {
-    Player host = await db.getPlayer(userId);
-    Game game = await db.insertGame(gameName, host.id);
+    host.value = await db.getPlayer(userId);
+    Game game = await db.insertGame(gameName, host.value.id);
     Get.toNamed(
       Routes.gamePreview,
-      arguments: {'game': game, 'host': host, 'userId': userId},
+      arguments: {'game': game, 'host': host.value, 'userId': userId},
     );
   }
 

@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.initial,
       getPages: Routes.routes,
+      theme: ThemeData(fontFamily: 'SilkScreen'),
     );
   }
 }
