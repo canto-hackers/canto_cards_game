@@ -8,63 +8,88 @@ class GamePreviewScreen extends GetView<GamePreviewController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Row(
+          Positioned.fill(
+            child: Image.asset(
+              'images/game-preview-bg.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: Container(
-                  height: 200,
-                  color: Colors.red,
-                  child: Center(
-                    child: Obx(
-                      () {
-                        return Text(
-                          controller.host.value.name,
-                          style: TextStyle(fontSize: 35, color: Colors.cyan),
-                        );
-                      },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.white,
+                        backgroundImage: AssetImage(
+                          'images/avatars/avatar1.png',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        controller.host.value.name,
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Obx(
+                    () => Column(
+                      children: [
+                        CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.white,
+                            backgroundImage: controller.joiner.value.name == "EMPTY"
+                                ? const AssetImage(
+                                    'images/avatars/empty_avatar.png',
+                                  )
+                                : AssetImage(
+                                    'images/avatars/avatar2.png',
+                                  )),
+                        const SizedBox(height: 10),
+                        Text(
+                          controller.joiner.value.name,
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
-              Text("VS"),
-              Expanded(
-                child: Container(
-                  height: 200,
-                  color: Colors.blueAccent,
-                  child: Center(
-                    child: Obx(
-                      () {
-                        return Text(
-                          controller.joiner.value.name,
-                          style: TextStyle(fontSize: 35, color: Colors.cyan),
-                        );
-                      },
-                    ),
+              const SizedBox(height: 50),
+              Visibility(
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: controller.isHost(),
+                child: ElevatedButton(
+                  onPressed: () {
+                    controller.startGame();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Text(
+                    "START GAME",
+                    style: TextStyle(fontSize: 30),
                   ),
                 ),
               ),
             ],
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          Visibility(
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            visible: controller.isHost(),
-            child: ElevatedButton(
-              onPressed: () {
-                controller.startGame();
-              },
-              child: Text(
-                "START GAME",
-                style: TextStyle(fontSize: 30),
-              ),
-            ),
           ),
         ],
       ),

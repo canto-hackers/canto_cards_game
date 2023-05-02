@@ -25,23 +25,19 @@ class GameLobbyScreen extends GetView<GameLobbyController> {
               margin: const EdgeInsets.symmetric(horizontal: 40),
               child: TextField(
                 controller: _gameNameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Enter Game Name',
                   filled: true,
                   fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Color(0xff23ff87),
+                      color: Theme.of(context).primaryColor,
                       width: 2.0,
                     ),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                   ),
                 ),
               ),
@@ -54,7 +50,7 @@ class GameLobbyScreen extends GetView<GameLobbyController> {
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
-                backgroundColor: const Color(0xff23ff87),
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               child: const Text('Create Game'),
             ),
@@ -87,7 +83,7 @@ class GameLobbyScreen extends GetView<GameLobbyController> {
                               controller.joinGame(game);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff23ff87),
+                              backgroundColor: Theme.of(context).primaryColor,
                               foregroundColor: Colors.black,
                             ),
                             child: const Text('Join'),
