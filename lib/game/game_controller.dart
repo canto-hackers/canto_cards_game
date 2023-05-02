@@ -48,6 +48,12 @@ class GameController extends GetxController {
       print('Game Play Update: ${payload.toString()}');
       GameDetails gd = GameDetails.fromJson(payload["new"]);
       gameDetails.value = gd;
+
+      if (isHost()) {
+        opponentPlayedCards.value = gameDetails.value.joinerPlayedCards!;
+      } else {
+        opponentPlayedCards.value = gameDetails.value.hostPlayedCards!;
+      }
     });
     channel.subscribe();
   }
@@ -55,15 +61,6 @@ class GameController extends GetxController {
   void playCard(int id) {
     playerPlayedCards.add(id);
     playerDeck.removeWhere((cardId) => cardId == id);
-
-    if (isHost()) {
-      gameDetails.value.hostPlayedCards = playerPlayedCards;
-      gameDetails.value.hostDeck = playerDeck;
-    } else {
-      gameDetails.value.joinerPlayedCards = playerPlayedCards;
-      gameDetails.value.joinerDeck = playerDeck;
-    }
-    db.updateGameDetails(gameDetails.value);
   }
 
   bool isHost() {
@@ -89,5 +86,16 @@ class GameController extends GetxController {
     playerPlayedCards.close();
     opponentPlayedCards.close();
     await db.supabase.removeChannel(channel);
+  }
+
+  Future<void> playRound() async {
+    if (isHost()) {
+      gameDetails.value.hostPlayedCards = playerPlayedCards;
+      gameDetails.value.hostDeck = playerDeck;
+    } else {
+      gameDetails.value.joinerPlayedCards = playerPlayedCards;
+      gameDetails.value.joinerDeck = playerDeck;
+    }
+    gameDetails.value = await db.updateGameDetails(gameDetails.value);
   }
 }

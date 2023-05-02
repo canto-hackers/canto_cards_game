@@ -31,6 +31,12 @@ class GameScreen extends GetView<GameController> {
             ),
           )),
           AvatarWidget(name: controller.getPlayerName()),
+          ElevatedButton(
+            onPressed: () {
+              controller.playRound();
+            },
+            child: Text("Play combination!"),
+          ),
           Expanded(
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
