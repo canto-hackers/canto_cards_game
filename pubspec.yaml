@@ -62,7 +62,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/cards/
+    - images/
+    - images/arena/
+    - images/avatars/
+    - images/cards/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -78,7 +81,7 @@ flutter:
   fonts:
     - family: IbmPlex
       fonts:
-        - asset: assets/fonts/IBMPlexMono-Light.ttf
+        - asset: fonts/IBMPlexMono-Light.ttf
     - family: SilkScreen
       fonts:
-        - asset: assets/fonts/Silkscreen-Regular.ttf
+        - asset: fonts/Silkscreen-Regular.ttf
