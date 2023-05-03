@@ -16,7 +16,10 @@ class GameScreen extends GetView<GameController> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AvatarWidget(name: controller.getOpponentName()),
+          AvatarWidget(
+            name: controller.getOpponentName(),
+            assetPath: controller.getOpponentImage(),
+          ),
           Expanded(
             child: Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -30,7 +33,10 @@ class GameScreen extends GetView<GameController> {
               children: buildCardWidget(controller.playerPlayedCards),
             ),
           )),
-          AvatarWidget(name: controller.getPlayerName()),
+          AvatarWidget(
+            name: controller.getPlayerName(),
+            assetPath: controller.getPlayerImage(),
+          ),
           ElevatedButton(
             onPressed: () {
               controller.playRound();

@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       getPages: Routes.routes,
       theme: ThemeData(
         fontFamily: 'SilkScreen',
-        primaryColor: const Color(0xFF23FF87),
+          primaryColor: const Color(0xFF23FF87),
       ),
     );
   }

@@ -98,4 +98,12 @@ class GameController extends GetxController {
     }
     gameDetails.value = await db.updateGameDetails(gameDetails.value);
   }
+
+  String getOpponentImage() {
+    return isHost() ? 'images/avatars/avatar1.png' : 'images/avatars/avatar2.png';
+  }
+
+  String getPlayerImage() {
+    return isHost() ? 'images/avatars/avatar2.png' : 'images/avatars/avatar1.png';
+  }
 }

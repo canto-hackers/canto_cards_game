@@ -1,3 +1,4 @@
+import 'package:canto_cards_game/game/components/avatar_widget.dart';
 import 'package:canto_cards_game/game/game_preview_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,50 +23,9 @@ class GamePreviewScreen extends GetView<GamePreviewController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    children: [
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage(
-                          'images/avatars/avatar1.png',
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        controller.host.value.name,
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
+                  AvatarWidget(name: controller.host.value.name, assetPath: 'images/avatars/avatar1.png'),
                   Obx(
-                    () => Column(
-                      children: [
-                        CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.white,
-                            backgroundImage: controller.joiner.value.name == "EMPTY"
-                                ? const AssetImage(
-                                    'images/avatars/empty_avatar.png',
-                                  )
-                                : AssetImage(
-                                    'images/avatars/avatar2.png',
-                                  )),
-                        const SizedBox(height: 10),
-                        Text(
-                          controller.joiner.value.name,
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                    () => AvatarWidget(name: controller.joiner.value.name, assetPath: 'images/avatars/avatar2.png'),
                   ),
                 ],
               ),
