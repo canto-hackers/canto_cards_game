@@ -9,45 +9,58 @@ class GameScreen extends GetView<GameController> {
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text(controller.game.value.name),
+    //   ),
     return Scaffold(
-      appBar: AppBar(
-        title: Text(controller.game.value.name),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
         children: [
-          AvatarWidget(
-            name: controller.getOpponentName(),
-            assetPath: controller.getOpponentImage(),
+          Positioned.fill(
+            child: Image.asset('images/arena/arena1.png', fit: BoxFit.cover),
           ),
-          Expanded(
-            child: Obx(() => Row(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AvatarWidget(
+                name: controller.getOpponentName(),
+                assetPath: controller.getOpponentImage(),
+              ),
+              Expanded(
+                child: Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: buildCardWidget(controller.opponentPlayedCards),
+                    )),
+              ),
+              Expanded(
+                  child: Obx(
+                () => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: buildCardWidget(controller.opponentPlayedCards),
-                )),
-          ),
-          Expanded(
-              child: Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: buildCardWidget(controller.playerPlayedCards),
-            ),
-          )),
-          AvatarWidget(
-            name: controller.getPlayerName(),
-            assetPath: controller.getPlayerImage(),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              controller.playRound();
-            },
-            child: Text("Play combination!"),
-          ),
-          Expanded(
-            child: Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: buildCardWidget(controller.playerDeck),
-                )),
+                  children: buildCardWidget(controller.playerPlayedCards),
+                ),
+              )),
+              AvatarWidget(
+                name: controller.getPlayerName(),
+                assetPath: controller.getPlayerImage(),
+              ),
+              Expanded(
+                child: Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: buildCardWidget(controller.playerDeck),
+                    )),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  controller.playRound();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Colors.black,
+                ),
+                child: const Text("Play round!"),
+              ),
+              const SizedBox(height: 50),
+            ],
           ),
         ],
       ),
