@@ -10,22 +10,35 @@ class AvatarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.white,
-          backgroundImage: name == 'EMPTY'
-              ? const AssetImage(
-                  'images/avatars/empty_avatar.png',
-                )
-              : AssetImage(assetPath),
-        ),
+        name == 'EMPTY'
+            ? const CircleAvatar(
+                radius: 50,
+                backgroundImage: AssetImage('images/avatars/empty_avatar.png'),
+              )
+            : CircleAvatar(
+                radius: 50,
+                backgroundImage: name == 'EMPTY'
+                    ? const AssetImage(
+                        'images/avatars/empty_avatar.png',
+                      )
+                    : AssetImage(assetPath),
+                child: ClipOval(
+                  child: Image.asset(
+                    name == 'EMPTY' ? 'images/avatars/empty_avatar.png' : assetPath,
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: 100,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
+              ),
         const SizedBox(height: 10),
         Text(
           name,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
+            color: Colors.white,
           ),
         ),
       ],

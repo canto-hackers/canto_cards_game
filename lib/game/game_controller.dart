@@ -100,10 +100,10 @@ class GameController extends GetxController {
   }
 
   String getOpponentImage() {
-    return isHost() ? 'images/avatars/avatar1.png' : 'images/avatars/avatar2.png';
+    return isHost() ? 'images/avatars/cypher.gif' : 'images/avatars/zenith.gif';
   }
 
   String getPlayerImage() {
-    return isHost() ? 'images/avatars/avatar2.png' : 'images/avatars/avatar1.png';
+    return isHost() ? 'images/avatars/zenith.gif' : 'images/avatars/cypher.gif';
   }
 }

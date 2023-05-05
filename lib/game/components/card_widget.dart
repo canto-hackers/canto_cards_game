@@ -5,7 +5,15 @@ import 'package:get/get.dart';
 class CardWidget extends GetView<GameController> {
   final int id;
 
-  const CardWidget({Key? key, required this.id}) : super(key: key);
+  final Map<int, String> cardIdToAssetPath = {
+    1: "C_cyborg_warrior.png",
+    2: "C_emp_grenade.png",
+    3: "C_energy_shield.png",
+    4: "C_scavenger.png",
+    5: "C_tech_specialist.png",
+  };
+
+  CardWidget({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +22,8 @@ class CardWidget extends GetView<GameController> {
         showCardDialog(context, CardWidget(id: id));
       },
       child: Container(
-        child: Text(id.toString()),
-        margin: EdgeInsets.all(8),
-        width: 60,
-        height: 80,
+        margin: const EdgeInsets.all(8),
+        width: 70,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -25,7 +31,17 @@ class CardWidget extends GetView<GameController> {
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
               blurRadius: 2,
-              offset: Offset(1, 1),
+              offset: const Offset(1, 1),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Image.asset(
+                'images/cards/${cardIdToAssetPath[id]}',
+                fit: BoxFit.cover,
+              ),
             ),
           ],
         ),
@@ -43,7 +59,7 @@ class CardWidget extends GetView<GameController> {
             width: 300,
             height: 400,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
@@ -57,13 +73,22 @@ class CardWidget extends GetView<GameController> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                cardWidget,
+                Expanded(
+                  child: Image.asset(
+                    'images/cards/${cardIdToAssetPath[id]}',
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     controller.playCard(id);
                     Get.back();
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.black,
+                  ),
                   child: Text("Play"),
                 ),
               ],
