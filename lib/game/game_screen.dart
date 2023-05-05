@@ -1,18 +1,15 @@
-import 'package:canto_cards_game/game/components/card_widget.dart';
+import 'package:canto_cards_game/game/cards/card_widget.dart';
 import 'package:canto_cards_game/game/components/avatar_widget.dart';
 import 'package:canto_cards_game/game/game_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:canto_cards_game/game/cards/card_model.dart' as myCard;
 
 class GameScreen extends GetView<GameController> {
   const GameScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text(controller.game.value.name),
-    //   ),
     return Scaffold(
       body: Stack(
         children: [
@@ -62,12 +59,16 @@ class GameScreen extends GetView<GameController> {
               const SizedBox(height: 50),
             ],
           ),
+          Text(
+            controller.game.value.name,
+            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
         ],
       ),
     );
   }
 
-  List<CardWidget> buildCardWidget(List<int> cardIds) {
-    return cardIds.map((id) => CardWidget(id: id)).toList();
+  List<CardWidget> buildCardWidget(List<myCard.CardModel> cards) {
+    return cards.map((card) => CardWidget(card: card)).toList();
   }
 }
