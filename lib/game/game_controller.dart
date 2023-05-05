@@ -106,4 +106,8 @@ class GameController extends GetxController {
   String getPlayerImage() {
     return isHost() ? 'images/avatars/zenith.gif' : 'images/avatars/cypher.gif';
   }
+
+  bool cardIsNotInPlay(int id) {
+    return !playerPlayedCards.contains(id) || !opponentPlayedCards.contains(id);
+  }
 }

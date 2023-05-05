@@ -80,16 +80,23 @@ class CardWidget extends GetView<GameController> {
                   ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.playCard(id);
-                    Get.back();
+                Obx(
+                  () {
+                    return Visibility(
+                      visible: !(controller.playerPlayedCards.contains(id) || controller.opponentPlayedCards.contains(id)),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          controller.playCard(id);
+                          Get.back();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.black,
+                        ),
+                        child: Text("Play"),
+                      ),
+                    );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.black,
-                  ),
-                  child: Text("Play"),
                 ),
               ],
             ),
