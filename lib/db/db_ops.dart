@@ -2,6 +2,7 @@ import 'package:canto_cards_game/game/cards/card_model.dart';
 import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
+import 'package:canto_cards_game/game/round_details_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -105,5 +106,43 @@ class DbOps {
   Future<List<PlayerCard>> getPlayedCards(List<int> cardIds) async {
     final List<dynamic> data = await supabase.from('deck').select('id, cards(*)').in_('id', cardIds);
     return data.map((playerCard) => PlayerCard.fromJson(playerCard)).toList();
+  }
+
+  Future<RoundDetails> insertRoundDetails(RoundDetails roundDetails) async {
+    final List<Map<String, dynamic>> data = await supabase
+        .from('round_details')
+        .insert(
+          roundDetails.toJson(),
+        )
+        .select();
+    return RoundDetails.fromJson(data.first);
+  }
+
+  Future<RoundDetails> getRoundDetailsBy(int gameId) async {
+    final List<dynamic> data = await supabase.from('round_details').select('*').match(
+      {'gameId': gameId},
+    );
+
+    return RoundDetails.fromJson(data.first);
+  }
+
+  Future<RoundDetails> updateRoundDetailsHostReady(RoundDetails rd) async {
+    final List<Map<String, dynamic>> data = await supabase.from('round_details').update({'hostReady': rd.hostReady}).eq('id', rd.id).select();
+    return RoundDetails.fromJson(data.first);
+  }
+
+  Future<RoundDetails> updateRoundDetailsJoinerReady(RoundDetails rd) async {
+    final List<Map<String, dynamic>> data = await supabase.from('round_details').update({'joinerReady': rd.joinerReady}).eq('id', rd.id).select();
+    return RoundDetails.fromJson(data.first);
+  }
+
+  Future<RoundDetails> updateRoundDetailsHostMoves(RoundDetails rd) async {
+    final List<Map<String, dynamic>> data = await supabase.from('round_details').update({'hostMoves': rd.hostMoves}).eq('id', rd.id).select();
+    return RoundDetails.fromJson(data.first);
+  }
+
+  Future<RoundDetails> updateRoundDetailsJoinerMoves(RoundDetails rd) async {
+    final List<Map<String, dynamic>> data = await supabase.from('round_details').update({'joinerMoves': rd.joinerMoves}).eq('id', rd.id).select();
+    return RoundDetails.fromJson(data.first);
   }
 }

@@ -3,6 +3,7 @@ import 'package:canto_cards_game/game/cards/cards.dart';
 import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
+import 'package:canto_cards_game/game/round_details_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,7 +16,11 @@ class GameController extends GetxController {
 
   int userId = Get.arguments["userId"]!;
 
+  // int userId = 3;
+
   Rx<GameDetails> gameDetails = GameDetails.empty().obs;
+  Rx<RoundDetails> roundDetails = RoundDetails.empty().obs;
+
   DbOps db = Get.find<DbOps>();
   CardsService cs = Get.find<CardsService>();
 
@@ -24,7 +29,15 @@ class GameController extends GetxController {
   RxList<PlayerCard> playerPlayedCards = <PlayerCard>[].obs;
   RxList<PlayerCard> opponentPlayedCards = <PlayerCard>[].obs;
 
+  final RxInt opponentLife = 5.obs;
+  final RxInt opponentDamage = 3.obs;
+  final RxInt playerLife = 5.obs;
+  final RxInt playerDamage = 3.obs;
+
+  RxInt playerMoves = 1.obs;
+
   var channel;
+  var roundDetailsChannel;
 
   @override
   Future<void> onInit() async {
@@ -37,6 +50,7 @@ class GameController extends GetxController {
     opponentDeck.value = isHost() ? await cs.getCards(joiner.value.id!) : await cs.getCards(host.value.id!);
 
     gameDetails.value = await db.getGameDetailsBy(game.value.id);
+    roundDetails.value = await db.getRoundDetailsBy(game.value.id);
 
     opponentPlayedCards.value =
         isHost() ? await cs.getPlayedCards(gameDetails.value.joinerPlayedCards!) : await cs.getPlayedCards(gameDetails.value.hostPlayedCards!);
@@ -56,18 +70,43 @@ class GameController extends GetxController {
       GameDetails gd = GameDetails.fromJson(payload["new"]);
       gameDetails.value = gd;
 
-      if (isHost()) {
-        opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.joinerPlayedCards!);
-      } else {
-        opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.hostPlayedCards!);
+      if (roundDetails.value.hostReady && roundDetails.value.joinerReady) {
+        if (isHost()) {
+          opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.joinerPlayedCards!);
+        } else {
+          opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.hostPlayedCards!);
+        }
       }
     });
     channel.subscribe();
+
+    roundDetailsChannel = db.supabase.channel('public:round_details:id=eq.${roundDetails.value.id}').on(
+        RealtimeListenTypes.postgresChanges,
+        ChannelFilter(
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'round_details',
+          filter: 'id=eq.${roundDetails.value.id}',
+        ), (payload, [ref]) async {
+      print('Round Details Update: ${payload.toString()}');
+
+      roundDetails.value = RoundDetails.fromJson(payload["new"]);
+    });
+
+    roundDetailsChannel.subscribe();
   }
 
   void playCard(PlayerCard card) {
     playerPlayedCards.add(card);
     playerDeck.removeWhere((cardToRemove) => cardToRemove.id == card.id);
+    playerMoves.value--;
+    if (isHost()) {
+      roundDetails.value.hostMoves = playerMoves.value;
+      db.updateRoundDetailsHostMoves(roundDetails.value);
+    } else {
+      roundDetails.value.joinerMoves = playerMoves.value;
+      db.updateRoundDetailsJoinerMoves(roundDetails.value);
+    }
   }
 
   bool isHost() {
@@ -93,20 +132,26 @@ class GameController extends GetxController {
     playerPlayedCards.close();
     opponentPlayedCards.close();
     await db.supabase.removeChannel(channel);
+    await db.supabase.removeChannel(roundDetailsChannel);
   }
 
   Future<void> playRound() async {
     if (isHost()) {
       gameDetails.value.hostPlayedCards = cs.getIdFromCards(playerPlayedCards);
       gameDetails.value.hostDeck = cs.getIdFromCards(playerDeck);
+      roundDetails.value.hostReady = true;
+      db.updateRoundDetailsHostReady(roundDetails.value);
     } else {
       gameDetails.value.joinerPlayedCards = cs.getIdFromCards(playerPlayedCards);
       gameDetails.value.joinerDeck = cs.getIdFromCards(playerDeck);
+      roundDetails.value.joinerReady = true;
+      db.updateRoundDetailsJoinerReady(roundDetails.value);
     }
     gameDetails.value = await db.updateGameDetails(gameDetails.value);
   }
 
   String getOpponentImage() {
+    //TODO move
     return isHost() ? 'images/avatars/cypher.gif' : 'images/avatars/zenith.gif';
   }
 
@@ -115,6 +160,10 @@ class GameController extends GetxController {
   }
 
   bool isPlayBtnVisible(PlayerCard card) {
+    if (playerMoves.value == 0) {
+      return false;
+    }
+
     return !(playerPlayedCards.contains(card) || opponentPlayedCards.contains(card));
   }
 }

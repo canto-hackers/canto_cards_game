@@ -1,6 +1,7 @@
 import 'package:canto_cards_game/db/db_ops.dart';
 import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
+import 'package:canto_cards_game/game/round_details_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
 import 'package:canto_cards_game/routes.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class GamePreviewController extends GetxController {
 
   int userId = Get.arguments["userId"]!;
   GameDetails gameDetails = GameDetails.empty();
+  RoundDetails roundDetails = RoundDetails.empty();
   RxBool isStarting = false.obs;
   DbOps db = Get.find<DbOps>();
   var channel;
@@ -69,6 +71,11 @@ class GamePreviewController extends GetxController {
     gameDetails.joinerDeck = await db.getUserDeckIds(joiner.value.id);
     gameDetails.hostPlayedCards = <int>[];
     gameDetails.joinerPlayedCards = <int>[];
+
+    roundDetails.gameId = game.value.id;
+    roundDetails.hostMoves = 1;
+    roundDetails.joinerMoves = 1;
+    roundDetails = await db.insertRoundDetails(roundDetails);
 
     gameDetails = await db.insertGameDetails(gameDetails);
     game.value = await db.updateGameStatus(game.value);

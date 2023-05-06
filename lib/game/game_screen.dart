@@ -16,12 +16,43 @@ class GameScreen extends GetView<GameController> {
           Positioned.fill(
             child: Image.asset('images/arena/arena1.png', fit: BoxFit.cover),
           ),
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.black.withOpacity(0.5),
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              AvatarWidget(
-                name: controller.getOpponentName(),
-                assetPath: controller.getOpponentImage(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(Icons.flash_on, color: Colors.yellow),
+                      Text(
+                        controller.opponentDamage.toString(),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 10),
+                    ],
+                  ),
+                  AvatarWidget(
+                    name: controller.getOpponentName(),
+                    assetPath: controller.getOpponentImage(),
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      const Icon(Icons.favorite, color: Colors.red),
+                      Text(
+                        controller.opponentLife.toString(),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               Expanded(
                 child: Obx(() => Row(
@@ -36,9 +67,36 @@ class GameScreen extends GetView<GameController> {
                   children: buildCardWidget(controller.playerPlayedCards),
                 ),
               )),
-              AvatarWidget(
-                name: controller.getPlayerName(),
-                assetPath: controller.getPlayerImage(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const SizedBox(width: 10),
+                      const Icon(Icons.flash_on, color: Colors.yellow),
+                      Text(
+                        controller.playerDamage.toString(),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      const SizedBox(width: 10),
+                    ],
+                  ),
+                  AvatarWidget(
+                    name: controller.getPlayerName(),
+                    assetPath: controller.getPlayerImage(),
+                  ),
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      const Icon(Icons.favorite, color: Colors.red),
+                      Text(
+                        controller.playerLife.toString(),
+                        style: const TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               Expanded(
                 child: Obx(() => Row(
@@ -54,7 +112,7 @@ class GameScreen extends GetView<GameController> {
                   backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.black,
                 ),
-                child: const Text("Play round!"),
+                child: const Text("READY"),
               ),
               const SizedBox(height: 50),
             ],
