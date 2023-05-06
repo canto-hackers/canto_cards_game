@@ -1,10 +1,10 @@
-import 'package:canto_cards_game/game/cards/card_model.dart';
+import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/game_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CardWidget extends GetView<GameController> {
-  final CardModel card;
+  final PlayerCard card;
 
   CardWidget({Key? key, required this.card}) : super(key: key);
 
@@ -32,7 +32,7 @@ class CardWidget extends GetView<GameController> {
           children: [
             Expanded(
               child: Image.asset(
-                'images/cards/${card.assetPath}',
+                'images/cards/${card.cardModel.assetPath}',
                 fit: BoxFit.cover,
               ),
             ),
@@ -68,7 +68,7 @@ class CardWidget extends GetView<GameController> {
               children: [
                 Expanded(
                   child: Image.asset(
-                    'images/cards/${card.assetPath}',
+                    'images/cards/${card.cardModel.assetPath}',
                     fit: BoxFit.cover,
                   ),
                 ),

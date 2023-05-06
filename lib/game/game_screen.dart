@@ -1,9 +1,9 @@
 import 'package:canto_cards_game/game/cards/card_widget.dart';
+import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/components/avatar_widget.dart';
 import 'package:canto_cards_game/game/game_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:canto_cards_game/game/cards/card_model.dart' as myCard;
 
 class GameScreen extends GetView<GameController> {
   const GameScreen({super.key});
@@ -68,7 +68,7 @@ class GameScreen extends GetView<GameController> {
     );
   }
 
-  List<CardWidget> buildCardWidget(List<myCard.CardModel> cards) {
+  List<CardWidget> buildCardWidget(List<PlayerCard> cards) {
     return cards.map((card) => CardWidget(card: card)).toList();
   }
 }

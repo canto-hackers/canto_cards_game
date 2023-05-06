@@ -65,8 +65,8 @@ class GamePreviewController extends GetxController {
   Future<void> startGame() async {
     game.value.status = "starting";
     gameDetails.gameId = game.value.id;
-    gameDetails.hostDeck = host.value.deck;
-    gameDetails.joinerDeck = joiner.value.deck;
+    gameDetails.hostDeck = await db.getUserDeckIds(host.value.id);
+    gameDetails.joinerDeck = await db.getUserDeckIds(joiner.value.id);
     gameDetails.hostPlayedCards = <int>[];
     gameDetails.joinerPlayedCards = <int>[];
 

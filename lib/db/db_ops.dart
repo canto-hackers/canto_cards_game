@@ -1,3 +1,5 @@
+import 'package:canto_cards_game/game/cards/card_model.dart';
+import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
@@ -83,5 +85,25 @@ class DbOps {
       // return null;
     }
     return GameDetails.fromJson(data.first);
+  }
+
+  Future<List<int>?> getUserDeckIds(int userId) async {
+    final List<dynamic> data = await supabase.from('deck').select('id').match({'userId': userId});
+    return data.map((e) => e["id"]).toList().cast<int>();
+  }
+
+  Future<CardModel> getCardById(int id) async {
+    final List<dynamic> data = await supabase.from('cards').select('*').match({'id': id});
+    return CardModel.fromJson(data.first);
+  }
+
+  Future<List<PlayerCard>> getUserCardModel(int userId) async {
+    final List<dynamic> data = await supabase.from('deck').select('id, cards(*)').match({'userId': userId});
+    return data.map((playerCard) => PlayerCard.fromJson(playerCard)).toList();
+  }
+
+  Future<List<PlayerCard>> getPlayedCards(List<int> cardIds) async {
+    final List<dynamic> data = await supabase.from('deck').select('id, cards(*)').in_('id', cardIds);
+    return data.map((playerCard) => PlayerCard.fromJson(playerCard)).toList();
   }
 }

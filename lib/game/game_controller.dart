@@ -1,6 +1,6 @@
 import 'package:canto_cards_game/db/db_ops.dart';
-import 'package:canto_cards_game/game/cards/card_model.dart';
 import 'package:canto_cards_game/game/cards/cards.dart';
+import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/game_details_model.dart';
 import 'package:canto_cards_game/game/game_model.dart';
 import 'package:canto_cards_game/player/player_model.dart';
@@ -17,11 +17,12 @@ class GameController extends GetxController {
 
   Rx<GameDetails> gameDetails = GameDetails.empty().obs;
   DbOps db = Get.find<DbOps>();
+  CardsService cs = Get.find<CardsService>();
 
-  RxList<CardModel> playerDeck = <CardModel>[].obs;
-  RxList<CardModel> opponentDeck = <CardModel>[].obs;
-  RxList<CardModel> playerPlayedCards = <CardModel>[].obs;
-  RxList<CardModel> opponentPlayedCards = <CardModel>[].obs;
+  RxList<PlayerCard> playerDeck = <PlayerCard>[].obs;
+  RxList<PlayerCard> opponentDeck = <PlayerCard>[].obs;
+  RxList<PlayerCard> playerPlayedCards = <PlayerCard>[].obs;
+  RxList<PlayerCard> opponentPlayedCards = <PlayerCard>[].obs;
 
   var channel;
 
@@ -32,12 +33,16 @@ class GameController extends GetxController {
     host.value = Get.arguments['host'] ?? host.value;
     joiner.value = Get.arguments['joiner'] ?? joiner.value;
 
-    playerDeck.value = isHost() ? Cards.getCards(host.value.deck!) : Cards.getCards(joiner.value.deck!);
-    opponentDeck.value = isHost() ? Cards.getCards(joiner.value.deck!) : Cards.getCards(host.value.deck!);
+    playerDeck.value = isHost() ? await cs.getCards(host.value.id!) : await cs.getCards(joiner.value.id!);
+    opponentDeck.value = isHost() ? await cs.getCards(joiner.value.id!) : await cs.getCards(host.value.id!);
 
     gameDetails.value = await db.getGameDetailsBy(game.value.id);
-    opponentPlayedCards.value = isHost() ? Cards.getCards(gameDetails.value.joinerPlayedCards!) : Cards.getCards(gameDetails.value.hostPlayedCards!);
-    playerPlayedCards.value = isHost() ? Cards.getCards(gameDetails.value.hostPlayedCards!) : Cards.getCards(gameDetails.value.joinerPlayedCards!);
+
+    opponentPlayedCards.value =
+        isHost() ? await cs.getPlayedCards(gameDetails.value.joinerPlayedCards!) : await cs.getPlayedCards(gameDetails.value.hostPlayedCards!);
+
+    playerPlayedCards.value =
+        isHost() ? await cs.getPlayedCards(gameDetails.value.hostPlayedCards!) : await cs.getPlayedCards(gameDetails.value.joinerPlayedCards!);
 
     channel = db.supabase.channel('public:game_details:id=eq.${gameDetails.value.id}').on(
         RealtimeListenTypes.postgresChanges,
@@ -52,15 +57,15 @@ class GameController extends GetxController {
       gameDetails.value = gd;
 
       if (isHost()) {
-        opponentPlayedCards.value = Cards.getCards(gameDetails.value.joinerPlayedCards!);
+        opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.joinerPlayedCards!);
       } else {
-        opponentPlayedCards.value = Cards.getCards(gameDetails.value.hostPlayedCards!);
+        opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.hostPlayedCards!);
       }
     });
     channel.subscribe();
   }
 
-  void playCard(CardModel card) {
+  void playCard(PlayerCard card) {
     playerPlayedCards.add(card);
     playerDeck.removeWhere((cardToRemove) => cardToRemove.id == card.id);
   }
@@ -92,11 +97,11 @@ class GameController extends GetxController {
 
   Future<void> playRound() async {
     if (isHost()) {
-      gameDetails.value.hostPlayedCards = Cards.getIdFromCards(playerPlayedCards);
-      gameDetails.value.hostDeck = Cards.getIdFromCards(playerDeck);
+      gameDetails.value.hostPlayedCards = cs.getIdFromCards(playerPlayedCards);
+      gameDetails.value.hostDeck = cs.getIdFromCards(playerDeck);
     } else {
-      gameDetails.value.joinerPlayedCards = Cards.getIdFromCards(playerPlayedCards);
-      gameDetails.value.joinerDeck = Cards.getIdFromCards(playerDeck);
+      gameDetails.value.joinerPlayedCards = cs.getIdFromCards(playerPlayedCards);
+      gameDetails.value.joinerDeck = cs.getIdFromCards(playerDeck);
     }
     gameDetails.value = await db.updateGameDetails(gameDetails.value);
   }
@@ -109,7 +114,7 @@ class GameController extends GetxController {
     return isHost() ? 'images/avatars/zenith.gif' : 'images/avatars/cypher.gif';
   }
 
-  bool isPlayBtnVisible(CardModel card) {
+  bool isPlayBtnVisible(PlayerCard card) {
     return !(playerPlayedCards.contains(card) || opponentPlayedCards.contains(card));
   }
 }

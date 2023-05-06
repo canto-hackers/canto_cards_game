@@ -5,9 +5,8 @@ class Player {
   final String? walletAddr;
   final int wins;
   final int losses;
-  List<int>? deck;
 
-  Player(this.id, this.timestamp, this.name, this.wins, this.walletAddr, this.losses, this.deck);
+  Player(this.id, this.timestamp, this.name, this.wins, this.walletAddr, this.losses);
 
   Player.empty({this.id = 0, this.name = "EMPTY", this.wins = 0, this.walletAddr = '0', this.losses = 0});
 
@@ -17,8 +16,7 @@ class Player {
         name = json['name'],
         wins = json['wins'],
         walletAddr = json['walletAddr'],
-        losses = json['losses'],
-        deck = json['deck'].cast<int>();
+        losses = json['losses'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -28,6 +26,5 @@ class Player {
         'walletAddr': walletAddr,
         'wins': wins,
         'losses': losses,
-        'deck': deck,
       };
 }
