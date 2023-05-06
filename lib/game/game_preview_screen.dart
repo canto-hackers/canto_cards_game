@@ -23,9 +23,21 @@ class GamePreviewScreen extends GetView<GamePreviewController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  AvatarWidget(name: controller.host.value.name, assetPath: 'images/avatars/cypher.gif'),
+                  AvatarWidget(
+                    name: controller.host.value.name,
+                    assetPath: 'images/avatars/cypher.gif',
+                    life: "",
+                    damage: "",
+                    moves: "",
+                  ),
                   Obx(
-                    () => AvatarWidget(name: controller.joiner.value.name, assetPath: 'images/avatars/zenith.gif'),
+                    () => AvatarWidget(
+                      name: controller.joiner.value.name,
+                      assetPath: 'images/avatars/zenith.gif',
+                      life: "",
+                      damage: "",
+                      moves: "",
+                    ),
                   ),
                 ],
               ),

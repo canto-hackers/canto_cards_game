@@ -27,30 +27,14 @@ class GameScreen extends GetView<GameController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(Icons.flash_on, color: Colors.yellow),
-                      Text(
-                        controller.opponentDamage.toString(),
-                        style: const TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                  ),
-                  AvatarWidget(
-                    name: controller.getOpponentName(),
-                    assetPath: controller.getOpponentImage(),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      const Icon(Icons.favorite, color: Colors.red),
-                      Text(
-                        controller.opponentLife.toString(),
-                        style: const TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ],
+                  Obx(
+                    () => AvatarWidget(
+                      name: controller.getOpponentName(),
+                      assetPath: controller.getOpponentImage(),
+                      life: controller.opponentLife.toString(),
+                      damage: controller.opponentDamage.toString(),
+                      moves: controller.playerMoves.toString(),
+                    ),
                   ),
                 ],
               ),
@@ -70,31 +54,14 @@ class GameScreen extends GetView<GameController> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const SizedBox(width: 10),
-                      const Icon(Icons.flash_on, color: Colors.yellow),
-                      Text(
-                        controller.playerDamage.toString(),
-                        style: const TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                  ),
-                  AvatarWidget(
-                    name: controller.getPlayerName(),
-                    assetPath: controller.getPlayerImage(),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      const Icon(Icons.favorite, color: Colors.red),
-                      Text(
-                        controller.playerLife.toString(),
-                        style: const TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ],
+                  Obx(
+                    () => AvatarWidget(
+                      name: controller.getPlayerName(),
+                      assetPath: controller.getPlayerImage(),
+                      life: controller.playerLife.toString(),
+                      damage: controller.playerDamage.toString(),
+                      moves: controller.playerMoves.toString(),
+                    ),
                   ),
                 ],
               ),
