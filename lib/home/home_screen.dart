@@ -59,7 +59,7 @@ class HomeScreen extends GetView<HomeController> {
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () => Get.toNamed('${Routes.gameLobby}?userId=3'),
+                  onPressed: () => Get.toNamed('${Routes.gameLobby}?userId=${controller.userId}'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
                     foregroundColor: Colors.black,
