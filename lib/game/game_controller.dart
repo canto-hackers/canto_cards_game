@@ -1,4 +1,5 @@
 import 'package:canto_cards_game/db/db_ops.dart';
+import 'package:canto_cards_game/game/cards/card_model.dart';
 import 'package:canto_cards_game/game/cards/cards.dart';
 import 'package:canto_cards_game/game/cards/player_card.dart';
 import 'package:canto_cards_game/game/game_details_model.dart';
@@ -35,6 +36,12 @@ class GameController extends GetxController {
   final RxInt playerDamage = 3.obs;
 
   RxInt playerMoves = 1.obs;
+
+  Rx<PlayerCard> winnerCard = PlayerCard.empty().obs;
+  Rx<PlayerCard> losingCard = PlayerCard.empty().obs;
+
+  Rx<Player> winner = Player.empty().obs;
+  RxBool showWinnerCard = false.obs;
 
   var channel;
   var roundDetailsChannel;
@@ -76,6 +83,25 @@ class GameController extends GetxController {
         } else {
           opponentPlayedCards.value = await cs.getPlayedCards(gameDetails.value.hostPlayedCards!);
         }
+
+        PlayerCard playerCard = playerPlayedCards.value.last;
+        PlayerCard opponentCard = opponentPlayedCards.value.last;
+        if (playerCard.cardModel.attack > opponentCard.cardModel.health) {
+          winner.value = isHost() ? host.value : joiner.value;
+          winnerCard.value = playerCard;
+          losingCard.value = opponentCard;
+        } else {
+          winner.value = isHost() ? joiner.value : host.value;
+          winnerCard.value = opponentCard;
+          losingCard.value = playerCard;
+        }
+
+        showWinnerCard.value = true;
+
+        await Future.delayed(const Duration(milliseconds: 5000), () {
+          showWinnerCard.value = false;
+          winnerCard.value.id = -1;
+        });
       }
     });
     channel.subscribe();
@@ -151,7 +177,6 @@ class GameController extends GetxController {
   }
 
   String getOpponentImage() {
-    //TODO move
     return isHost() ? 'images/avatars/cypher.gif' : 'images/avatars/zenith.gif';
   }
 

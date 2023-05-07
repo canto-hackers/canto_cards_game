@@ -11,85 +11,105 @@ class GameScreen extends GetView<GameController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset('images/arena/arena1.png', fit: BoxFit.cover),
-          ),
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0.5),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(children: [
+        Container(
+          child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Positioned.fill(
+                child: Image.asset('images/arena/arena1.png', fit: BoxFit.cover),
+              ),
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Colors.black.withOpacity(0.5),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Obx(
-                    () => AvatarWidget(
-                      name: controller.getOpponentName(),
-                      assetPath: controller.getOpponentImage(),
-                      life: controller.opponentLife.toString(),
-                      damage: controller.opponentDamage.toString(),
-                      moves: controller.playerMoves.toString(),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(
+                        () => AvatarWidget(
+                          name: controller.getOpponentName(),
+                          assetPath: controller.getOpponentImage(),
+                          life: controller.opponentLife.toString(),
+                          damage: controller.opponentDamage.toString(),
+                          moves: controller.playerMoves.toString(),
+                        ),
+                      ),
+                    ],
                   ),
+                  Expanded(
+                    child: Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: buildCardWidget(controller.opponentPlayedCards),
+                        )),
+                  ),
+                  Expanded(
+                      child: Obx(
+                    () => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: buildCardWidget(controller.playerPlayedCards),
+                    ),
+                  )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(
+                        () => AvatarWidget(
+                          name: controller.getPlayerName(),
+                          assetPath: controller.getPlayerImage(),
+                          life: controller.playerLife.toString(),
+                          damage: controller.playerDamage.toString(),
+                          moves: controller.playerMoves.toString(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: buildCardWidget(controller.playerDeck),
+                        )),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.playRound();
+                      // updateWinnerCardPosition(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.black,
+                    ),
+                    child: const Text("READY"),
+                  ),
+                  const SizedBox(height: 50),
                 ],
               ),
-              Expanded(
-                child: Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: buildCardWidget(controller.opponentPlayedCards),
-                    )),
+              Text(
+                controller.game.value.name,
+                style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
               ),
-              Expanded(
-                  child: Obx(
-                () => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: buildCardWidget(controller.playerPlayedCards),
-                ),
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Obx(
-                    () => AvatarWidget(
-                      name: controller.getPlayerName(),
-                      assetPath: controller.getPlayerImage(),
-                      life: controller.playerLife.toString(),
-                      damage: controller.playerDamage.toString(),
-                      moves: controller.playerMoves.toString(),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: buildCardWidget(controller.playerDeck),
-                    )),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  controller.playRound();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Colors.black,
-                ),
-                child: const Text("READY"),
-              ),
-              const SizedBox(height: 50),
             ],
           ),
-          Text(
-            controller.game.value.name,
-            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        Obx(
+          () => Visibility(
+            visible: controller.winnerCard.value.id != -1,
+            child: Center(
+              child: AnimatedOpacity(
+                opacity: controller.showWinnerCard.value ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 1000),
+                child: Transform.scale(
+                  scale: 4, // Adjust this value to change the size of the winning card
+                  child: CardWidget(key: ValueKey(controller.winnerCard.value.id), card: controller.winnerCard.value),
+                ),
+              ),
+            ),
           ),
-        ],
-      ),
+        ),
+      ]),
     );
   }
 
